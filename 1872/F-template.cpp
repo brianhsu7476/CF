@@ -44,23 +44,22 @@ void outarr(I L, I R){
 #define oo 1000000007
 template <typename I>
 auto maxarr(I L, I R){
+	if(L==R)return -oo;
 	auto r=*L;
-	if(L==R)return r=-oo;
 	for(; L!=R; ++L)r=max(r, *L);
 	return r;
 }
 template <typename I>
 auto minarr(I L, I R){
+	if(L==R)return oo;
 	auto r=*L;
-	if(L==R)return r=oo;
 	for(; L!=R; ++L)r=min(r, *L);
 	return r;
 }
 template <typename I>
 auto sumarr(I L, I R){
-	auto r=*L;
-	if(L==R)return r-*L;
-	for(++L; L!=R; ++L)r=r+*L;
+	typename I::value_type r=0;
+	for(; L!=R; ++L)r=r+*L;
 	return r;
 }
 template <typename I>
@@ -86,16 +85,64 @@ ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')
 
 #define mod 1000000007
 #define kN 1000006
-#include "topoSort.h"
-int n, a[kN];
+
+void topoSort(int n, vi *G, vi &res){
+	static int deg[kN], stk[kN];
+	int ns=0;
+	res.clear();
+	rep(i, n)deg[i]=0;
+	rep(i, n)for(int j:G[i])++deg[j];
+	rep(i, n)if(!deg[i])stk[ns++]=i;
+	while(ns){
+		int x=stk[--ns];
+		res.pb(x);
+		for(int u:G[x])if(!--deg[u])stk[ns++]=u;
+	}
+}
+
+int n, a[kN], c[kN], onc[kN];
+vi cyc[kN], G[kN], res;
+bool vis[kN];
+
+int dfs(int x){
+	vis[x]=1;
+	if(onc[a[x]]!=-2)return onc[x]=-1;
+	if(vis[a[x]])return onc[x]=a[x];
+	onc[x]=dfs(a[x]);
+	if(x==onc[x])return -1;
+	return onc[x];
+}
 
 signed main(){
-	ios::sync_with_stdio(0), cin.tie(0);
+	//ios::sync_with_stdio(0), cin.tie(0);
 	int T; cin>>T;
 	while(T--){
 		cin>>n;
-		vector<int> a(n);
-		inarr(all(a));
-		cout<<maxarr(all(a))<<endl;
+		rep(i, n)vis[i]=0, onc[i]=-2, cyc[i].clear(), G[i].clear();
+		inarr(a, a+n), inarr(c, c+n);
+		rep(i, n)--a[i];
+		rep(i, n)if(!vis[i])dfs(i);
+		rep(i, n)if(~onc[i])cyc[onc[i]].pb(i);
+		rep(i, n)if(cyc[i].size()){
+			int mnid=0;
+			fup(j, 1, cyc[i].size())if(c[cyc[i][j]]<c[cyc[i][mnid]])mnid=j;
+			vis[cyc[i][mnid]]=0;
+		}
+		rep(i, n)if(vis[i])G[i].pb(a[i]);
+		/*
+		rep(i, n)if(vis[i])++deg[a[i]];
+		set<P> pq;
+		rep(i, n)pq.ins(P(deg[i], i));
+		while(!pq.empty()){
+			P p=*pq.begin();
+			pq.erase(p);
+			assert(p.x==0);
+			cout<<p.y+1<<' ';
+			if(vis[p.y])pq.erase(P(deg[a[p.y]], a[p.y])), --deg[a[p.y]], pq.ins(P(deg[a[p.y]], a[p.y]));
+		}
+		cout<<endl;
+		*/
+		topoSort(n, G, res);
+		rep(i, n)cout<<res[i]+1<<" \n"[i==n-1];
 	}
 }
