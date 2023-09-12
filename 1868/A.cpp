@@ -85,13 +85,16 @@ istream &operator>>(istream &in, P &a){return in>>a.x>>a.y;}
 ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')';}
 
 #define mod 1000000007
-#define kN 1000006
-int n, a[kN];
+#define kN 200005
+int n, m;
 
 signed main(){
 	ios::sync_with_stdio(0), cin.tie(0);
 	int T; cin>>T;
 	while(T--){
-		
+		cin>>n>>m;
+		if(m==1){rep(i, n+1)cout<<"0\n"; continue;}
+		cout<<min(m, n+1)<<endl;
+		rep(i, n)rep(j, m)cout<<(i%(m-1)+j)%m<<" \n"[j==m-1];
 	}
 }

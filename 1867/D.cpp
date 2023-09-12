@@ -86,12 +86,46 @@ ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')
 
 #define mod 1000000007
 #define kN 1000006
-int n, a[kN];
+int n, k, a[kN], onc[kN], cnt[kN], d[kN];
+bool vis[kN];
+
+int dfs(int x){
+	vis[x]=1;
+	if(onc[a[x]]!=-2)return onc[x]=-1;
+	onc[x]=vis[a[x]]?a[x]:dfs(a[x]);
+	if(x==onc[x])return -1;
+	return onc[x];
+}
+
+void dfs2(int x){
+	if(~onc[a[x]])d[x]=1;
+	else if(d[a[x]])d[x]=d[a[x]]+1;
+	else dfs2(a[x]), d[x]=d[a[x]]+1;
+}
 
 signed main(){
 	ios::sync_with_stdio(0), cin.tie(0);
 	int T; cin>>T;
 	while(T--){
-		
+		cin>>n>>k, inarr(a, a+n);
+		rep(i, n)--a[i];
+		if(k==1){
+			bool ok=1;
+			rep(i, n)if(a[i]!=i){ok=0; break;}
+			cout<<(ok?"YES\n":"NO\n");
+			continue;
+		}
+		rep(i, n)vis[i]=0, cnt[i]=d[i]=0, onc[i]=-2;
+		rep(i, n)if(!vis[i])dfs(i);
+		orange(onc, onc+n);
+		rep(i, n)if(~onc[i])++cnt[onc[i]];
+		orange(cnt, cnt+n);
+		bool ok=1;
+		rep(i, n)if(cnt[i]&&cnt[i]!=k){ok=0; break;}
+		/*
+		rep(i, n)if(!~onc[i]&&!d[i])dfs2(i);
+		rep(i, n)if(d[i]>=k){ok=0; break;}
+		*/
+		cout<<(ok?"YES\n":"NO\n");
 	}
 }

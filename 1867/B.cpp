@@ -86,12 +86,27 @@ ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')
 
 #define mod 1000000007
 #define kN 1000006
-int n, a[kN];
+int n;
+string s;
+bool a[kN];
 
 signed main(){
 	ios::sync_with_stdio(0), cin.tie(0);
 	int T; cin>>T;
 	while(T--){
-		
+		cin>>n>>s;
+		int cnt=0;
+		rep(i, n)if(s[i]!=s[n-1-i])++cnt;
+		cnt>>=1;
+		if(n&1){
+			rep(i, n+1)a[i]=1;
+			rep(i, cnt)a[i]=a[n-i]=0;
+		}
+		else{
+			rep(i, n+1)a[i]=(i&1)==(cnt&1);
+			rep(i, cnt)a[i]=a[n-i]=0;
+		}
+		rep(i, n+1)cout<<a[i];
+		cout<<endl;
 	}
 }

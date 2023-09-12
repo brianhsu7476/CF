@@ -84,14 +84,61 @@ struct P{
 istream &operator>>(istream &in, P &a){return in>>a.x>>a.y;}
 ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')';}
 
-#define mod 1000000007
-#define kN 1000006
-int n, a[kN];
+#define mod 998244353
+#define kN 100005
+#define kLog 64
+int n, m, a[kLog*2], b[kN];
+
+int Pow(int a, int b){
+	int r=1;
+	for(; b; b>>=1, a=a*a%mod)if(b&1)r=r*a%mod;
+	return r;
+}
 
 signed main(){
 	ios::sync_with_stdio(0), cin.tie(0);
 	int T; cin>>T;
 	while(T--){
-		
+		cin>>n>>m;
+		fup(i, 1, m+1)b[i]=1;
+		rep(k, kLog*2){
+			if(k>n)break;
+			a[k]=b[m]*m;
+			rep(i, m)a[k]-=b[i];
+			a[k]=(a[k]%mod+mod)%mod;
+			a[k]=a[k]*Pow(m, n-k)%mod;
+			rep(i, m+1)b[i]=b[i]*i%mod;
+			assert(a[k]>=0);
+		}
+		orange(a, a+10);
+		int hb=62;
+		while(!(n>>hb))--hb;
+		//debug(hb);
+		int ans=0;
+		rep(i, kLog)rep(j, kLog){
+			int n0=(n^(1ll<<hb))+1, k=max(i, j);
+			if(k>hb)continue;
+			if(k==0){ans=(ans+n%mod*a[1])%mod; continue;}
+			//debug(n0);
+			int cnt=((1ll<<hb-k)-1)%mod;
+			cnt=(cnt+(n0>>k))%mod;
+			int r=n0&(1ll<<k)-1, cnt2=0;
+			//debug(k, r);
+			auto f=[](int k){return k?(1ll<<k-1)%mod:1ll;};
+			if(r<(1ll<<k-1)){
+				if(j==k)cnt2=0;
+				else cnt2=r%mod*f(j)%mod;
+			}
+			else{
+				r^=1ll<<k-1;
+				if(j<k)cnt2=f(i)*f(j)%mod;
+				else cnt2=r%mod*f(i)%mod;
+			}
+			debug(i, j, cnt, f(i), f(j), cnt2);
+			cnt=(cnt*f(i)%mod*f(j)%mod+cnt2)%mod;
+			//debug(i, j, cnt);
+			ans=(ans+cnt*a[i+j+1])%mod;
+		}
+		cout<<ans<<endl;
 	}
 }

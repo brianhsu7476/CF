@@ -88,10 +88,20 @@ ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')
 #define kN 1000006
 int n, a[kN];
 
+int qry(int k){
+	cout<<k<<endl;
+	fflush(stdout);
+	cin>>k;
+	return k;
+}
+
 signed main(){
-	ios::sync_with_stdio(0), cin.tie(0);
+	//ios::sync_with_stdio(0), cin.tie(0);
 	int T; cin>>T;
 	while(T--){
-		
+		cin>>n, inarr(a, a+n);
+		int i=0;
+		while(i<n&&a[i]==i)++i;
+		while(i!=-1)i=qry(i);
 	}
 }

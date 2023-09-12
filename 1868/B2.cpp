@@ -86,12 +86,42 @@ ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')
 
 #define mod 1000000007
 #define kN 1000006
-int n, a[kN];
+#define kLog 31
+int n, a[kN], cnt[kLog], b[kLog], c[kLog];
+map<int, P> mp;
 
 signed main(){
 	ios::sync_with_stdio(0), cin.tie(0);
+	rep(i, kLog)rep(j, kLog)if(i!=j)mp[(1ll<<i)-(1ll<<j)]=P(i, j);
 	int T; cin>>T;
 	while(T--){
-		
+		rep(i, kLog)cnt[i]=b[i]=c[i]=0;
+		cin>>n;
+		inarr(a, a+n);
+		int avg=sumarr(a, a+n);
+		if(avg%n!=0){cout<<"No\n"; continue;}
+		avg/=n;
+		bool ok=1;
+		rep(i, n)if(a[i]!=avg){
+			int x=a[i]-avg;
+			if(mp.find(x)==mp.end()){ok=0; break;}
+			P p=mp[x];
+			++cnt[p.x], --cnt[p.y];
+			if(p.x==p.y+1)++b[p.y];
+			if(p.x+1==p.y)++c[p.x];
+		}
+		rep(i, kLog)if(cnt[i]){
+			if(cnt[i]&1){ok=0; break;}
+			if(cnt[i]>0)while(cnt[i]&&c[i]){
+				cnt[i]-=2, --c[i];
+				if(i<kLog-1)++cnt[i+1];
+			}
+			if(cnt[i]<0)while(cnt[i]&&b[i]){
+				cnt[i]+=2, --b[i];
+				if(i<kLog-1)--cnt[i+1];
+			}
+			if(cnt[i]){ok=0; break;}
+		}
+		cout<<(ok?"Yes\n":"No\n");
 	}
 }

@@ -86,12 +86,28 @@ ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')
 
 #define mod 1000000007
 #define kN 1000006
-int n, a[kN];
+#define kLog 31
+int n, a[kN], cnt[kLog];
+map<int, P> mp;
 
 signed main(){
 	ios::sync_with_stdio(0), cin.tie(0);
+	rep(i, kLog)rep(j, kLog)if(i!=j)mp[(1ll<<i)-(1ll<<j)]=P(i, j);
 	int T; cin>>T;
 	while(T--){
-		
+		rep(i, kLog)cnt[i]=0;
+		cin>>n;
+		inarr(a, a+n);
+		int avg=sumarr(a, a+n);
+		if(avg%n!=0){cout<<"No\n"; continue;}
+		avg/=n;
+		bool ok=1;
+		rep(i, n)if(a[i]!=avg){
+			int x=a[i]-avg;
+			if(mp.find(x)==mp.end()){ok=0; break;}
+			++cnt[mp[x].x], --cnt[mp[x].y];
+		}
+		rep(i, kLog)if(cnt[i]){ok=0; break;}
+		cout<<(ok?"Yes\n":"No\n");
 	}
 }

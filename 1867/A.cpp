@@ -86,12 +86,17 @@ ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')
 
 #define mod 1000000007
 #define kN 1000006
-int n, a[kN];
+int n, b[kN];
+P a[kN];
 
 signed main(){
 	ios::sync_with_stdio(0), cin.tie(0);
 	int T; cin>>T;
 	while(T--){
-		
+		cin>>n;
+		rep(i, n)cin>>a[i].x, a[i].y=i;
+		sort(a, a+n);
+		rep(i, n)b[a[i].y]=n-i;
+		outarr(b, b+n);
 	}
 }

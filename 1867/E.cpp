@@ -86,12 +86,22 @@ ostream &operator<<(ostream &out, const P a){return out<<'('<<a.x<<", "<<a.y<<')
 
 #define mod 1000000007
 #define kN 1000006
-int n, a[kN];
+int n, k, a[kN];
+int qry(int x){
+	cout<<"? "<<x+1<<endl;
+	fflush(stdout);
+	cin>>x;
+	return x;
+}
 
 signed main(){
-	ios::sync_with_stdio(0), cin.tie(0);
+	//ios::sync_with_stdio(0), cin.tie(0);
 	int T; cin>>T;
 	while(T--){
-		
+		cin>>n>>k;
+		int ans=0, i=0;
+		for(; i<=n-k; i+=k)ans^=qry(i);
+		for(i-=k-1; i<=n-k; ++i)ans^=qry(i);
+		cout<<"! "<<ans<<endl, fflush(stdout);
 	}
 }
